@@ -1,77 +1,63 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const inset = useSafeAreaInsets();
+  const style = StyleSheet.create({
+    container: {
+      paddingTop: inset.top + 50,
+      paddingHorizontal: 16,
+    },
+    alignTextCenter: {
+      alignSelf: 'center',
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    paragraph: {
+      fontSize: 16,
+    }
+  })
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
+        <View style={style.container}>
+          <ThemedText style={[style.title, style.alignTextCenter]}>SampleApp</ThemedText>
+          <ThemedText style={[style.paragraph, style.alignTextCenter]}>2026. 03. 19</ThemedText>
+        </View>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">안녕하세요! <HelloWave /></ThemedText>
+        <ThemedText>이번 시간에 배울 내용들을 담았습니다.</ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
+        <Link href="/modal/button">
           <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+            <ThemedText type="subtitle">1. Button과 TouchOpacity</ThemedText>
           </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
         </Link>
-
         <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
+          Button과 TouchOpacity가 어떻게 표시되는지 확인합니다.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <Link href="/modal/safeArea">
+          <Link.Trigger>
+            <ThemedText type="subtitle">2. Safe Area Inset</ThemedText>
+          </Link.Trigger>
+        </Link>
         <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          내 스마트폰에서 Safe Area 영역을 확인합니다.
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
@@ -80,9 +66,9 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    flexDirection: 'column',
+    gap: 2,
+    paddingBottom: 8,
   },
   stepContainer: {
     gap: 8,

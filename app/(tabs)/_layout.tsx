@@ -23,13 +23,27 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        <Tabs.Screen
+            name="workaround"
+            options={{
+                title: 'Workaround',
+                tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+            }}
+        />
+        <Tabs.Screen
+            name="playground"
+            options={{
+                title: 'Playground 1',
+                tabBarIcon: ({ color }) => <IconSymbol size={28} name="network" color={color} />,
+            }}
+        />
+        <Tabs.Screen
+            name="playgroundStageTwo"
+            options={{
+                title: 'Playground 2',
+                tabBarIcon: ({ color }) => <IconSymbol size={28} name="network" color={color} />,
+            }}
+        />
     </Tabs>
   );
 }

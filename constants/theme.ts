@@ -8,6 +8,36 @@ import { Platform } from 'react-native';
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
+export const Spacing = {
+  xs: 4,
+  sm: 8,
+  md: 10,
+  lg: 14,
+  xl: 16,
+  xxl: 24,
+};
+
+export const FontSizes = {
+  xs: 13,
+  sm: 15,
+  md: 16,
+  lg: 20,
+  xl: 24,
+  xxl: 32,
+};
+
+export const AvatarSizes = {
+  sm: 28,
+  md: 36,
+  lg: 64,
+  xl: 86,
+};
+
+export const FeedColors = {
+  primaryText: '#262626',
+  likeActive: '#ED4956',
+};
+
 export const Colors = {
   light: {
     text: '#11181C',

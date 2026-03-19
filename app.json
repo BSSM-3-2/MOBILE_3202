@@ -38,6 +38,25 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/PretendardVariable.ttf"],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Pretendard",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/fonts/PretendardVariable.ttf",
+                    "weight": 800
+                  }
+                ]
+              }
+            ]
+          }
+        }
       ]
     ],
     "experiments": {
