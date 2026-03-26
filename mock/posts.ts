@@ -655,7 +655,7 @@ const MOCK_POSTS: Post[] = [
         userId: 'd901b3e7-cc20-4f6a-a514-8b34fd021c67',
         images: [{ type: 'LOCAL', source: cat }],
         likes: 2165,
-        caption: '길고양이 급식소 봉사 다녀왔어요 🐱💕 #길고양이 #길냥이사랑',
+        caption: '길고양이 급식소 봉사 다녀왔어요 🐱💕 #길고양이',
         timestamp: '6일 전',
         comments: [
             {
