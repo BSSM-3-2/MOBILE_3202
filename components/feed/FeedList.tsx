@@ -1,11 +1,11 @@
+import { useFeedStore } from '@/store/feed-store';
+import { Post } from '@type/Post';
 import { FlatList } from 'react-native';
 import Animated, {
-    useAnimatedScrollHandler,
     SharedValue,
+    useAnimatedScrollHandler,
 } from 'react-native-reanimated';
-import { Post } from '@type/Post';
 import { SwipeableFeedPost } from './post/SwipeableFeedPost';
-import { useFeedStore } from '@/store/feed-store';
 
 // TODO: AnimatedFlatList 만들기 (실습 6-1)
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Post>);
@@ -22,7 +22,11 @@ function FeedList({
     const { removePost } = useFeedStore();
 
     // TODO: scrollHandler 정의 (실습 6-2)
-    const scrollHandler = useAnimatedScrollHandler(event => {});
+    const scrollHandler = useAnimatedScrollHandler(event => {
+        if (scrollY) {
+            scrollY.value = event.contentOffset.y;
+        }
+    });
 
     return (
         // TODO: onScroll + scrollEventThrottle 연결 (실습 6-3)
