@@ -1,13 +1,13 @@
-import { StyleSheet } from 'react-native';
-import { Post } from '@type/Post';
+import { useFeedStore } from '@/store/feed-store';
+import { resolveImageSource } from '@/utils/image';
 import ContentContainer from '@components/container';
-import { FeedPostHeader } from './FeedPostHeader';
+import FeedImage from '@components/feed/post/FeedImage';
+import { ThemedView } from '@components/themed-view';
+import { Post } from '@type/Post';
+import { StyleSheet } from 'react-native';
 import { FeedPostActions } from './FeedPostActions';
 import { FeedPostCaption } from './FeedPostCaption';
-import { ThemedView } from '@components/themed-view';
-import FeedImage from '@components/feed/post/FeedImage';
-import { resolveImageSource } from '@/utils/image';
-import { useFeedStore } from '@/store/feed-store';
+import { FeedPostHeader } from './FeedPostHeader';
 
 function FeedPost({ post }: { post: Post }) {
     const user = post.author;
@@ -16,14 +16,22 @@ function FeedPost({ post }: { post: Post }) {
     if (!user) return null;
 
     // TODO: 최신 liked 상태 가져오기 (실습 3-6)
+    const latestPost = posts.find(p => p.id === post.id);
+    const liked = latestPost?.liked ?? post.liked;
 
     // TODO: handleDoubleTap 작성 (실습 3-7)
+    const handleDoubleTap = () => {
+        void toggleLike(post.id);
+    };
 
     return (
         <ThemedView style={styles.feedMargin}>
             <FeedPostHeader user={user} />
             {/* TODO: onDoubleTap 연결 (실습 3-8) */}
-            <FeedImage image={resolveImageSource(post.images[0])} />
+            <FeedImage
+                image={resolveImageSource(post.images[0])}
+                onDoubleTap={handleDoubleTap}
+            />
             <ContentContainer style={{ gap: 4 }}>
                 <FeedPostActions
                     postId={post.id}
