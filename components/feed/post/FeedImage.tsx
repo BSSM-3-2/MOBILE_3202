@@ -69,8 +69,11 @@ export default function FeedImage({
             }
         });
 
+    const nativeGesture = Gesture.Native();
+
     // TODO: Gesture.Simultaneous로 합성 (실습 3-3)
     const composedGesture = Gesture.Simultaneous(
+        nativeGesture,
         pinchGesture,
         doubleTapGesture,
     );
