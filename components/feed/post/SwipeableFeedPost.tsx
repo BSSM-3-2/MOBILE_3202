@@ -1,8 +1,15 @@
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { Post } from '@type/Post';
+import * as Haptics from 'expo-haptics';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+    runOnJS,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+    withTiming,
+} from 'react-native-reanimated';
 import { FeedPost } from './FeedPost';
 
 const DELETE_AREA_WIDTH = 80;
@@ -15,23 +22,59 @@ function SwipeableFeedPost({
     post: Post;
     onDelete: (id: string) => void;
 }) {
-    // TODO: translateX 선언 (실습 4-1)
-    // TODO: cardScale 선언 (실습 5-1)
+    const translateX = useSharedValue(0);
+    const cardScale = useSharedValue(1);
+    const startX = useSharedValue(0);
 
-    // TODO: panGesture 정의 (실습 4-2)
-    const panGesture = Gesture.Pan();
+    const triggerLongPressHaptic = () => {
+        if (process.env.EXPO_OS !== 'web') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+    };
 
-    // TODO: longPressGesture 정의 (실습 5-2)
-    const longPressGesture = Gesture.LongPress();
+    const panGesture = Gesture.Pan()
+        // Activate only when horizontal intent is clear.
+        .activeOffsetX([-12, 12])
+        // Give vertical scroll priority when finger moves mostly up/down.
+        .failOffsetY([-8, 8])
+        .onBegin(() => {
+            startX.value = translateX.value;
+        })
+        .onUpdate(e => {
+            const nextX = startX.value + e.translationX;
+            translateX.value = Math.max(-DELETE_AREA_WIDTH, Math.min(0, nextX));
+        })
+        .onEnd(() => {
+            if (translateX.value < DELETE_THRESHOLD) {
+                translateX.value = withSpring(-DELETE_AREA_WIDTH);
+            } else {
+                translateX.value = withSpring(0);
+            }
+        });
 
-    // TODO: Gesture.Race로 합성 (실습 5-3)
+    const longPressGesture = Gesture.LongPress()
+        .onStart(() => {
+            cardScale.value = withTiming(0.98, { duration: 150 });
+            runOnJS(triggerLongPressHaptic)();
+        })
+        .onFinalize(() => {
+            cardScale.value = withSpring(1);
+        });
+
     const composedGesture = Gesture.Race(longPressGesture, panGesture);
 
-    // TODO: animatedStyle 정의 (실습 4-3)
-    const animatedStyle = useAnimatedStyle(() => ({}));
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateX: translateX.value },
+            { scale: cardScale.value },
+        ],
+    }));
 
-    // TODO: handleDeletePress 작성 (실습 4-4)
-    const handleDeletePress = () => {};
+    const handleDeletePress = () => {
+        translateX.value = withTiming(-DELETE_AREA_WIDTH, {}, () => {
+            runOnJS(onDelete)(post.id);
+        });
+    };
 
     return (
         <View style={styles.container}>
