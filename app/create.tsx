@@ -447,15 +447,14 @@ export default function CreateScreen() {
                             알림 채널 테스트 (importance 비교)
                         </Text>
                         <Text style={styles.testGuide}>
-                            각 버튼을 클릭하여 다른 중요도의 알림을 테스트하세요.
-                            실제 앱을 삭제 후 재설치해야 importance 변경이 적용됩니다.
+                            각 버튼을 클릭하여 다른 중요도의 알림을
+                            테스트하세요. 실제 앱을 삭제 후 재설치해야
+                            importance 변경이 적용됩니다.
                         </Text>
 
                         <TouchableOpacity
                             style={[styles.testButton, styles.maxButton]}
-                            onPress={() =>
-                                testNotification('MAX (긴급)')
-                            }
+                            onPress={() => testNotification('MAX (긴급)')}
                         >
                             <Text style={styles.testButtonText}>
                                 MAX - Heads-up 표시
@@ -464,9 +463,7 @@ export default function CreateScreen() {
 
                         <TouchableOpacity
                             style={[styles.testButton, styles.highButton]}
-                            onPress={() =>
-                                testNotification('HIGH (높음)')
-                            }
+                            onPress={() => testNotification('HIGH (높음)')}
                         >
                             <Text style={styles.testButtonText}>
                                 HIGH - Heads-up 표시 가능
@@ -475,11 +472,7 @@ export default function CreateScreen() {
 
                         <TouchableOpacity
                             style={[styles.testButton, styles.defaultButton]}
-                            onPress={() =>
-                                testNotification(
-                                    'DEFAULT (기본)',
-                                )
-                            }
+                            onPress={() => testNotification('DEFAULT (기본)')}
                         >
                             <Text style={styles.testButtonText}>
                                 DEFAULT - 알림창에만 표시
@@ -488,9 +481,7 @@ export default function CreateScreen() {
 
                         <TouchableOpacity
                             style={[styles.testButton, styles.lowButton]}
-                            onPress={() =>
-                                testNotification('LOW (낮음)')
-                            }
+                            onPress={() => testNotification('LOW (낮음)')}
                         >
                             <Text style={styles.testButtonText}>
                                 LOW - 소리/진동 없음
@@ -499,9 +490,7 @@ export default function CreateScreen() {
 
                         <TouchableOpacity
                             style={[styles.testButton, styles.minButton]}
-                            onPress={() =>
-                                testNotification('MIN (최소)')
-                            }
+                            onPress={() => testNotification('MIN (최소)')}
                         >
                             <Text style={styles.testButtonText}>
                                 MIN - 거의 보이지 않음
