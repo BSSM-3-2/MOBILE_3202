@@ -1,4 +1,5 @@
 import { login, LoginPayload, signup, SignupPayload } from '@/api/auth';
+import { getMe } from '@/api/users';
 import User from '@type/User';
 // TODO 실습 1: expo-secure-store를 import하세요
 import * as SecureStore from 'expo-secure-store';
@@ -42,11 +43,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     bootstrap: async () => {
         // TODO 실습 3: 다음 흐름을 구현하세요
         // 1. SecureStore에서 accessToken을 읽는다
+        const accessToken = await SecureStore.getItemAsync(TOKEN_KEY);
         // 2. 없으면 status 'guest'로 설정 후 return
+        if (!accessToken) {
+            set({ status: 'guest' });
+            return;
+        }
+
         // 3. set({ accessToken })으로 interceptor가 헤더를 붙이도록 임시 세팅
+        const refreshToken = await SecureStore.getItemAsync(REFRESH_KEY);
+        set({ accessToken, refreshToken });
+
         // 4. getMe()로 서버 검증
-        // 5. 성공 → status 'authenticated' / 실패 → 토큰 삭제 후 'guest'
-        set({ status: 'guest' } as never); // 임시 — 실습 3 완료 후 삭제
+        try {
+            const user = await getMe();
+            // 5. 성공 → status 'authenticated' / 실패 → 토큰 삭제 후 'guest'
+            set({ user, status: 'authenticated' });
+        } catch {
+            await SecureStore.deleteItemAsync(TOKEN_KEY);
+            await SecureStore.deleteItemAsync(REFRESH_KEY);
+            set({
+                user: null,
+                accessToken: null,
+                refreshToken: null,
+                status: 'guest',
+            });
+        }
     },
 
     signUp: async payload => {
