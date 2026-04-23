@@ -8,15 +8,15 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { ThemedText } from '@components/themed-text';
-import { StyleSheet } from 'react-native';
-import { useAuthStore } from '@/store/auth-store';
 import { usePushRegistration } from '@/hooks/use-push-registration';
+import { useAuthStore } from '@/store/auth-store';
+import { ThemedText } from '@components/themed-text';
 import * as Notifications from 'expo-notifications';
+import { StyleSheet } from 'react-native';
 
 // 포그라운드에서도 알림 배너가 보이도록 설정
 Notifications.setNotificationHandler({
@@ -38,7 +38,8 @@ export const unstable_settings = {
 const AUTH_ROUTES = new Set(['login', 'signup']);
 
 function AuthGuard() {
-    const { accessToken /* TODO 실습 2: status도 꺼내세요 */ } = useAuthStore();
+    const { accessToken /* TODO 실습 2: status도 꺼내세요 */, status } =
+        useAuthStore();
     const segments = useSegments();
     const router = useRouter();
 
@@ -46,6 +47,7 @@ function AuthGuard() {
 
     useEffect(() => {
         // TODO 실습 2: status === 'checking' 이면 return으로 라우팅을 보류하세요
+        if (status === 'checking') return;
 
         const currentRoute = segments[0] as string | undefined;
         const inAuthRoute = AUTH_ROUTES.has(currentRoute ?? '');
@@ -55,7 +57,7 @@ function AuthGuard() {
         } else if (accessToken && inAuthRoute) {
             router.replace('/(tabs)');
         }
-    }, [accessToken, segments]); // TODO 실습 2: 의존성 배열에 status를 추가하세요
+    }, [accessToken, router, segments, status]); // TODO 실습 2: 의존성 배열에 status를 추가하세요
 
     return null;
 }
