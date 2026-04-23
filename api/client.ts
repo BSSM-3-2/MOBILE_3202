@@ -1,9 +1,13 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-const BASE_URL: string =
-    (Constants.expoConfig?.extra?.apiUrl as string | undefined) ??
-    'https://bssm-api.zer0base.me';
+const BASE_URL = Constants.expoConfig?.extra?.apiUrl as string | undefined;
+
+if (!BASE_URL) {
+    throw new Error(
+        'EXPO_PUBLIC_API_URL이 설정되지 않았습니다. .env 파일을 확인하세요.',
+    );
+}
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
