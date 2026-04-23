@@ -1,5 +1,5 @@
-import apiClient from './client';
 import User from '@type/User';
+import apiClient from './client';
 
 export interface AuthResponse {
     tokenType: string;
@@ -41,3 +41,6 @@ export const refreshToken = async (token: string): Promise<AuthResponse> => {
 
 // TODO 실습 4-2: POST /auth/logout 을 호출하는 logout 함수를 작성하세요
 // Body: { refreshToken: token }
+export const logout = async (token: string): Promise<void> => {
+    await apiClient.post('/auth/logout', { refreshToken: token });
+};
