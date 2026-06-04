@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     TouchableOpacity,
@@ -12,7 +12,7 @@ import ContentContainer from '@components/container';
 import { FeedList } from '@components/feed/FeedList';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedView } from '@components/themed-view';
-import { useFeedStore } from '@/store/feed-store';
+import { useFeedPosts } from '@/hooks/useFeedPosts';
 import { useRouter } from 'expo-router';
 import { Pretendard } from '@/constants/theme';
 import Animated, {
@@ -87,7 +87,9 @@ const feedErrorStyles = StyleSheet.create({
 export default function HomeScreen() {
     // TODO: useFeedStore()를 useFeedPosts() Hook으로 교체하세요 (실습 5)
     //       import { useFeedPosts } from '@/hooks/useFeedPosts';
-    const { posts, loading, error, fetchFeed, loadMore } = useFeedStore();
+    const [keyword, setKeyword] = useState('');
+    const { posts, filteredPosts, loading, error, fetchFeed, loadMore } =
+        useFeedPosts(keyword);
     const router = useRouter();
 
     // scrollY: 스크롤 위치를 UI 스레드에서 직접 추적하는 SharedValue
@@ -150,7 +152,9 @@ export default function HomeScreen() {
             ) : (
                 // scrollY를 FeedList에 전달 → useAnimatedScrollHandler가 내부에서 처리
                 <FeedList
-                    posts={posts}
+                    posts={filteredPosts}
+                    keyword={keyword}
+                    onChangeKeyword={setKeyword}
                     onEndReached={loadMore}
                     scrollY={scrollY}
                 />

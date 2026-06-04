@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import {
     FlatList,
     RefreshControl,
@@ -23,10 +23,14 @@ const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Post>);
 
 function FeedList({
     posts,
+    keyword,
+    onChangeKeyword,
     onEndReached,
     scrollY,
 }: {
     posts: Post[];
+    keyword?: string;
+    onChangeKeyword?: (text: string) => void;
     onEndReached?: () => void;
     scrollY?: SharedValue<number>;
 }) {
@@ -35,18 +39,6 @@ function FeedList({
     //         const fetchFeed  = useFeedStore(s => s.fetchFeed);
     //         const loading    = useFeedStore(s => s.loading);
     const { removePost, fetchFeed, loading } = useFeedStore();
-
-    const [keyword, setKeyword] = useState('');
-
-    const filteredPosts = useMemo(() => {
-        const query = keyword.trim().toLowerCase();
-        if (!query) return posts;
-        return posts.filter(
-            p =>
-                p.caption.toLowerCase().includes(query) ||
-                p.author?.username.toLowerCase().includes(query),
-        );
-    }, [posts, keyword]);
 
     // useAnimatedScrollHandler: 스크롤 이벤트를 UI 스레드 worklet으로 처리
     // 일반 onScroll 대비 이점: JS 스레드 부하 없이 매 프레임 정확한 위치 추적
@@ -82,19 +74,21 @@ function FeedList({
 
     return (
         <AnimatedFlatList
-            data={filteredPosts}
+            data={posts}
             keyExtractor={item => item.id}
             renderItem={renderItem}
             ListHeaderComponent={
-                <TextInput
-                    style={postStyles.searchInput}
-                    value={keyword}
-                    onChangeText={setKeyword}
-                    placeholder='게시물 검색'
-                    placeholderTextColor='#8e8e8e'
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                />
+                onChangeKeyword ? (
+                    <TextInput
+                        style={postStyles.searchInput}
+                        value={keyword}
+                        onChangeText={onChangeKeyword}
+                        placeholder='게시물 검색'
+                        placeholderTextColor='#8e8e8e'
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                    />
+                ) : null
             }
             showsVerticalScrollIndicator={false}
             onEndReached={onEndReached}
