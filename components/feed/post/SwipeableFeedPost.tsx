@@ -1,3 +1,4 @@
+import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -18,7 +19,7 @@ import { FeedPost } from './FeedPost';
 const DELETE_AREA_WIDTH = 80;
 const DELETE_THRESHOLD = -60;
 
-function SwipeableFeedPost({
+const SwipeableFeedPost = React.memo(function SwipeableFeedPost({
     post,
     onDelete,
 }: {
@@ -91,7 +92,7 @@ function SwipeableFeedPost({
             </GestureDetector>
         </View>
     );
-}
+});
 
 const styles = StyleSheet.create({
     container: {

@@ -1,4 +1,12 @@
-import { FlatList, RefreshControl, View, Text, StyleSheet } from 'react-native';
+import { useCallback } from 'react';
+import {
+    FlatList,
+    RefreshControl,
+    View,
+    Text,
+    StyleSheet,
+    ListRenderItem,
+} from 'react-native';
 import Animated, {
     useAnimatedScrollHandler,
     SharedValue,
@@ -36,6 +44,24 @@ function FeedList({
     // TODO 2: renderItem을 useCallback으로 안정화하세요
     //         dependency 배열: [removePost]
     //         SwipeableFeedPost에 React.memo가 있어야 효과가 납니다
+    const renderItem: ListRenderItem<Post> = useCallback(
+        ({ item }) => (
+            /* 포스트별 부분 Boundary — 한 포스트 에러가 전체 피드를 죽이지 않도록 격리 */
+            <ErrorBoundary
+                key={item.id}
+                fallback={
+                    <View style={postStyles.error}>
+                        <Text style={postStyles.errorText}>
+                            이 게시물을 표시할 수 없어요.
+                        </Text>
+                    </View>
+                }
+            >
+                <SwipeableFeedPost post={item} onDelete={removePost} />
+            </ErrorBoundary>
+        ),
+        [removePost],
+    );
 
     // TODO 3 (선택): 카드 높이가 고정이라면 getItemLayout을 추가하세요
     //         const ITEM_HEIGHT = 420; // 실제 높이로 조정
@@ -45,21 +71,7 @@ function FeedList({
         <AnimatedFlatList
             data={posts}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-                /* 포스트별 부분 Boundary — 한 포스트 에러가 전체 피드를 죽이지 않도록 격리 */
-                <ErrorBoundary
-                    key={item.id}
-                    fallback={
-                        <View style={postStyles.error}>
-                            <Text style={postStyles.errorText}>
-                                이 게시물을 표시할 수 없어요.
-                            </Text>
-                        </View>
-                    }
-                >
-                    <SwipeableFeedPost post={item} onDelete={removePost} />
-                </ErrorBoundary>
-            )}
+            renderItem={renderItem}
             showsVerticalScrollIndicator={false}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.5}

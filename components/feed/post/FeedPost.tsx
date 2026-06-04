@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { Post } from '@type/Post';
 import ContentContainer from '@components/container';
@@ -15,7 +16,7 @@ import { useFeedStore } from '@/store/feed-store';
 // TODO 2: React.memo로 컴포넌트를 감싸세요
 //         export const FeedPost = React.memo(function FeedPost(...) { ... });
 
-function FeedPost({ post }: { post: Post }) {
+const FeedPost = React.memo(function FeedPost({ post }: { post: Post }) {
     console.log('FeedPost render:', post.id);
 
     const user = post.author;
@@ -28,13 +29,13 @@ function FeedPost({ post }: { post: Post }) {
     const currentPost = posts.find(p => p.id === post.id);
     const liked = currentPost?.liked ?? post.liked;
 
-    if (!user) return null;
-
     // TODO 4: useCallback으로 감싸세요 — dependency: [liked, toggleLike, post.id]
     //         단, useCallback은 if (!user) return null 보다 위에 있어야 합니다
-    const handleDoubleTap = () => {
+    const handleDoubleTap = useCallback(() => {
         if (!liked) toggleLike(post.id);
-    };
+    }, [liked, toggleLike, post.id]);
+
+    if (!user) return null;
 
     return (
         <ThemedView style={styles.feedMargin}>
@@ -60,7 +61,7 @@ function FeedPost({ post }: { post: Post }) {
             </ContentContainer>
         </ThemedView>
     );
-}
+});
 
 const styles = StyleSheet.create({
     feedMargin: {
