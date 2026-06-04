@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
     FlatList,
     RefreshControl,
     View,
     Text,
+    TextInput,
     StyleSheet,
     ListRenderItem,
 } from 'react-native';
@@ -34,6 +35,18 @@ function FeedList({
     //         const fetchFeed  = useFeedStore(s => s.fetchFeed);
     //         const loading    = useFeedStore(s => s.loading);
     const { removePost, fetchFeed, loading } = useFeedStore();
+
+    const [keyword, setKeyword] = useState('');
+
+    const filteredPosts = useMemo(() => {
+        const query = keyword.trim().toLowerCase();
+        if (!query) return posts;
+        return posts.filter(
+            p =>
+                p.caption.toLowerCase().includes(query) ||
+                p.author?.username.toLowerCase().includes(query),
+        );
+    }, [posts, keyword]);
 
     // useAnimatedScrollHandler: 스크롤 이벤트를 UI 스레드 worklet으로 처리
     // 일반 onScroll 대비 이점: JS 스레드 부하 없이 매 프레임 정확한 위치 추적
@@ -69,9 +82,20 @@ function FeedList({
 
     return (
         <AnimatedFlatList
-            data={posts}
+            data={filteredPosts}
             keyExtractor={item => item.id}
             renderItem={renderItem}
+            ListHeaderComponent={
+                <TextInput
+                    style={postStyles.searchInput}
+                    value={keyword}
+                    onChangeText={setKeyword}
+                    placeholder='게시물 검색'
+                    placeholderTextColor='#8e8e8e'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                />
+            }
             showsVerticalScrollIndicator={false}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.5}
@@ -89,6 +113,15 @@ function FeedList({
 }
 
 const postStyles = StyleSheet.create({
+    searchInput: {
+        marginHorizontal: 16,
+        marginBottom: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 8,
+        backgroundColor: '#efefef',
+        fontSize: 14,
+    },
     error: {
         paddingVertical: 24,
         alignItems: 'center',
